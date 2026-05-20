@@ -1,0 +1,105 @@
+﻿@model VPT_Movie_Box.Models.ETicketViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Ticket - @Model.MovieTitle</title>
+    <link rel="stylesheet" href="@Url.Content("~/css/e_ticket.css")" />
+    <link href="https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700" rel="stylesheet">
+    <style>
+        .poster img {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: cover;
+            display: block;
+        }
+        @@media print {
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+@if (Model != null)
+{
+    <div class="ticket">
+        <div class="holes-top"></div>
+
+        <div class="title">
+            <p class="cinema">@Model.CinemaName</p>
+            <p class="movie-title">@Model.MovieTitle.ToUpper()</p>
+        </div>
+
+        <div class="poster">
+            @if (!string.IsNullOrEmpty(Model.PosterUrl))
+            {
+                <img src="@Model.PosterUrl" alt="@Model.MovieTitle" style="width:100%; height:auto;" />
+            }
+        </div>
+
+        <div class="info">
+            <table>
+                <tr>
+                    <th>SCREEN</th>
+                    <th>ROW</th>
+                    <th>SEAT</th>
+                </tr>
+                <tr>
+                    <td class="bigger">@Model.ScreenName</td>
+                    <td class="bigger">@Model.SeatRow</td>
+                    <td class="bigger">@Model.SeatNumber</td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <th>PRICE</th>
+                    <th>DATE</th>
+                    <th>TIME (DURATION)</th>
+                </tr>
+                <tr>
+                    <td class="bigger">@Model.Price.ToString("N0") VND</td>
+                    
+                    <td>@Model.StartTime.ToString("dd/MM/yyyy")</td>
+                    
+                    <td class="bigger">
+                        @Model.StartTime.ToString("HH:mm") - @Model.EndTime.ToString("HH:mm")
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="holes-lower"></div>
+
+        <div class="serial">
+            <p>BOOKING ID : <strong>@Model.BookingId</strong></p>
+            <div class="barcode">
+                <img src="https://barcode.tec-it.com/barcode.ashx?data=@Model.BookingId&code=Code128&dpi=96"
+                     alt="Barcode Ticket" />
+            </div>
+        </div>
+    </div>
+    
+    <div class="no-print" style="text-align: center; margin-top: 20px;">
+        <button onclick="window.print()" style="padding: 10px 20px; cursor: pointer; background-color: #df0e62; color: white; border: none; border-radius: 5px;">
+            In vé ngay
+        </button>
+    </div>
+}
+else
+{
+    <div style="text-align: center; margin-top: 50px;">
+        <h2>Không tìm thấy thông tin vé</h2>
+        <a href="/">Quay lại trang chủ</a>
+    </div>
+}
+
+</body>
+</html>

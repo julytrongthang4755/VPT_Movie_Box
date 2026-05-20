@@ -1,0 +1,69 @@
+﻿@{
+    var appName = "StarBugCinema";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@appName</title>
+
+    <link rel="icon" type="image/png"
+          href="~/images/favicon.ico"
+          asp-append-version="true" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    <!-- Project styles -->
+    <link rel="stylesheet"
+          href="~/css/style-starter.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/swiper.min.css"
+          asp-append-version="true" />
+
+    @RenderSection("Styles", required: false)
+</head>
+
+<body>
+
+    <main role="main" class="container">
+        @RenderBody()
+    </main>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"
+            asp-append-version="true"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
+            asp-append-version="true"></script>
+
+    <script src="~/js/owl.carousel.js"
+            asp-append-version="true"></script>
+
+    <script src="~/js/jquery.magnific-popup.min.js"
+            asp-append-version="true"></script>
+
+    <script src="~/js/easyResponsiveTabs.js"
+            asp-append-version="true"></script>
+
+    <script src="~/js/theme-change.js"
+            asp-append-version="true"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

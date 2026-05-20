@@ -1,0 +1,95 @@
+﻿/* Dropdown Container */
+.user-dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #fff;
+    min-width: 220px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
+    z-index: 9999;
+    border-radius: 8px;
+    padding: 10px 0;
+    border: 1px solid #eee;
+}
+
+    .user-dropdown-content.show {
+        display: block;
+    }
+
+.dropdown-header {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.user-dropdown-content a, .btn-logout {
+    color: #333 !important;
+    padding: 12px 20px;
+    text-decoration: none;
+    display: block;
+    font-size: 1rem;
+    transition: 0.3s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+    .user-dropdown-content a:hover, .btn-logout:hover {
+        background-color: #f8f9fa;
+        color: #df0e62 !important;
+    }
+
+/* Modal Profile */
+.modal-custom {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content-custom {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 30px;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 15px;
+    position: relative;
+    text-align: center;
+}
+
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #999;
+}
+
+.form-control-custom {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.btn-save-pw {
+    background: #df0e62;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 6px;
+    margin-top: 15px;
+    cursor: pointer;
+    font-weight: bold;
+}

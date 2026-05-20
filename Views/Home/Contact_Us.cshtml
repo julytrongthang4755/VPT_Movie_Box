@@ -1,0 +1,292 @@
+﻿@model Contact
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us page</title>
+  <link rel="stylesheet" type="text/css" href="~/css/as-alert-message.min.css">
+  <link rel="stylesheet" type="text/css" href="~/css/contact_us.css">
+  <link rel="stylesheet" type="text/css" href="~/css/style-starter.css">
+  <link rel="stylesheet" type="text/css" href="~/css/user-profile.css">
+</head>
+
+<body>
+  <header id="site-header" class="w3l-header fixed-top">
+    <!--/nav-->
+    <nav class="navbar navbar-expand-lg navbar-light fill px-lg-0 py-0 px-3">
+      <div class="container">
+        <h1><a class="navbar-brand" asp-controller="Home" asp-action="Index"><span class="fa fa-play icon-log" aria-hidden="true"></span>
+          MyShowz </a></h1>
+        <!-- if logo is image enable this   
+                    <a class="navbar-brand" href="#Index.cshtml">
+                        <img src="image-path" alt="Your logo" title="Your logo" style="height:35px;" />
+                    </a> -->
+        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse"
+          data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+          aria-label="Toggle navigation">
+          <!-- <span class="navbar-toggler-icon"></span> -->
+          <span class="fa icon-expand fa-bars"></span>
+          <span class="fa icon-close fa-times"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" asp-controller="Home" asp-action="Movies">Movies</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" asp-controller="Home" asp-action="About">About</a>
+            </li>
+
+            <li class="nav-item active">
+              <a class="nav-link" asp-controller="Home" asp-action="Contact_Us">Contact</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" asp-controller="Home" asp-action="BookingHistory">History</a>
+            </li>
+          </ul>
+
+          <!--/search-right-->
+			<div class="Login_SignUp" id="login_section" style="font-size: 2rem; display: inline-block; position: relative; margin-left: 15px;">
+				@if (User.Identity.IsAuthenticated)
+				{
+					<a class="nav-link" href="javascript:void(0)" id="userDropdown" style="padding: 0;">
+						<i class="fa fa-user-circle-o"></i>
+					</a>
+        
+					<div class="user-dropdown-content" id="myDropdown">
+						<div class="dropdown-header">Xin chào, <b>@User.Identity.Name</b></div>
+						<hr style="margin: 5px 0;" />
+						<a href="javascript:void(0)" onclick="openProfileModal()">
+							<i class="fa fa-user-o"></i> Thông tin cá nhân
+						</a>
+						<form asp-controller="Home" asp-action="Logout" method="post" id="logoutForm" style="display: block;">
+							@Html.AntiForgeryToken()
+							<button type="submit" class="btn-logout">
+								<i class="fa fa-sign-out"></i> Đăng xuất
+							</button>
+						</form>
+					</div>
+				}
+				else
+				{
+					<a class="nav-link" asp-controller="Home" asp-action="Sign_In" title="Login">
+						<i class="fa fa-user-circle-o"></i>
+					</a>
+				}
+			</div>
+			<div id="profileModal" class="modal-custom">
+				<div class="modal-content-custom">
+					<span class="close-modal" onclick="closeProfileModal()">&times;</span>
+					<h2 style="color: #df0e62; margin-bottom: 20px;">Thông tin cá nhân</h2>
+                    @Html.AntiForgeryToken()
+					<div class="profile-info" style="text-align: left; font-size: 1rem;">
+						<p><strong>Tên đăng nhập:</strong> <span>@User.Identity.Name</span></p>
+						<p><strong>Email:</strong> <span>@User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Email)?.Value</span></p>
+						<hr style="margin: 20px 0;" />
+						<h3 style="font-size: 1.2rem; margin-bottom: 15px;">Đổi mật khẩu</h3>
+						<input type="password" placeholder="Mật khẩu cũ" id="old-pass" class="form-control-custom">
+						<input type="password" placeholder="Mật khẩu mới" id="new-pass" class="form-control-custom">
+						<button class="btn-save-pw" onclick="changePassword()">Cập nhật mật khẩu</button>
+					</div>
+				</div>
+			</div>
+        </div>
+        <!-- toggle switch for light and dark theme -->
+        <div class="mobile-position">
+          <nav class="navigation">
+            <div class="theme-switch-wrapper">
+              <label class="theme-switch" for="checkbox">
+                <input type="checkbox" id="checkbox">
+                <div class="mode-container">
+                  <i class="gg-sun"></i>
+                  <i class="gg-moon"></i>
+                </div>
+              </label>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <!-- Contact Us Form -->
+  <div class="container">
+    <h4>Contact Us</h4>
+    <h3>Leave a Message</h3>
+    <p>If you have a question regarding our services,
+      feel free to contact us using the form below.</p>
+
+    <form asp-controller="Home" asp-action="Contact_Us" method="post">
+      @Html.AntiForgeryToken()
+      <div class="row100" id="fname-row100">
+        <div class="col">
+          <div class="inputBox" id="fname-inputBox">
+            <input type="text" asp-for="Name" onclick="triggerAnim('fname')" />
+            <span class="text">First Name</span>
+            <span class="line" id="fname-line"></span>
+            <span class="text-danger">@Html.ValidationMessageFor(m => m.Name)</span>
+          </div>
+        </div>
+      </div>
+      <div class="row100" id="email-row100">
+        <div class="col">
+          <div class="inputBox" id="email-inputBox">
+            <input type="email" asp-for="Email" onclick="triggerAnim('email')" />
+            <span class="text">Email ID</span>
+            <span class="line" id="email-line"></span>
+            <span class="text-danger">@Html.ValidationMessageFor(m => m.Email)</span>
+          </div>
+        </div>
+        <div class="col">
+          <div class="inputBox" id="tel-inputBox">
+            <input type="tel" asp-for="Phone" onclick="triggerAnim('tel')" />
+            <span class="text">Mobile Number</span>
+            <span class="line" id="tel-line"></span>
+            <span class="text-danger">@Html.ValidationMessageFor(m => m.Phone)</span>
+          </div>
+        </div>
+      </div>
+      <div class="row100">
+        <div class="col">
+          <div class="inputBox textarea">
+            <textarea asp-for="Message"></textarea>
+            <span class="text">Type your message Here...</span>
+            <span class="line"></span>
+            <span class="text-danger">@Html.ValidationMessageFor(m => m.Message)</span>
+          </div>
+        </div>
+      </div>
+      <div class="row100">
+        <div class="col">
+          <div class="submitbutton">
+            <button class="btn submitbtn" type="submit">Submit</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <script type="text/javascript" src="~/js/contact-us.js"></script>
+  <script type="text/javascript" src="~/js/as-alert-message.min.js"></script>
+
+  <!--/theme-change-->
+  <script src="~/js/theme-change.js"></script>
+  <!-- disable body scroll which navbar is in active -->
+  <script>
+    $(function () {
+      $('.navbar-toggler').click(function () {
+        $('body').toggleClass('noscroll');
+      })
+    });
+  </script>
+  <!-- disable body scroll which navbar is in active -->
+  <!--/MENU-JS-->
+  <script>
+    $(window).on("scroll", function () {
+      var scroll = $(window).scrollTop();
+
+      if (scroll >= 80) {
+        $("#site-header").addClass("nav-fixed");
+      } else {
+        $("#site-header").removeClass("nav-fixed");
+      }
+    });
+
+    //Main navigation Active Class Add Remove
+    $(".navbar-toggler").on("click", function () {
+      $("header").toggleClass("active");
+    });
+    $(document).on("ready", function () {
+      if ($(window).width() > 991) {
+        $("header").removeClass("active");
+      }
+      $(window).on("resize", function () {
+        if ($(window).width() > 991) {
+          $("header").removeClass("active");
+        }
+      });
+    });
+  </script>
+
+</body>
+
+</html>
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<script src="~/js/bootstrap.min.js"></script>
+
+		<script>
+			$(document).ready(function () {
+				// Toggle Dropdown
+				$("#userDropdown").on("click", function (e) {
+					$("#myDropdown").toggleClass("show");
+					e.stopPropagation();
+				});
+
+				// Click ra ngoài thì đóng dropdown
+				$(document).on("click", function (e) {
+					if (!$(e.target).closest('#login_section').length) {
+						$("#myDropdown").removeClass("show");
+					}
+				});
+			});
+
+			function openProfileModal() {
+				$("#profileModal").fadeIn(300);
+				$("#myDropdown").removeClass("show");
+			}
+
+			function closeProfileModal() {
+				$("#profileModal").fadeOut(300);
+			}
+
+			// Đóng modal khi nhấn ra ngoài vùng trắng
+			window.onclick = function(event) {
+				let modal = document.getElementById("profileModal");
+				if (event.target == modal) {
+					closeProfileModal();
+				}
+			}
+
+			function changePassword() {
+				const oldPw = $("#old-pass").val();
+				const newPw = $("#new-pass").val();
+    
+				// Lấy Token để gửi lên server (tránh lỗi 400)
+				const token = $('input[name="__RequestVerificationToken"]').val();
+
+				if (!oldPw || !newPw) {
+					alert("Vui lòng nhập đầy đủ mật khẩu cũ và mới!");
+					return;
+				}
+
+				// Gửi yêu cầu AJAX lên Controller
+				$.ajax({
+					url: '/Home/ChangePassword',
+					type: 'POST',
+					data: {
+						__RequestVerificationToken: token, 
+						oldPassword: oldPw,
+						newPassword: newPw
+					},
+					success: function (res) {
+						if (res.success) {
+							alert(res.message);
+							closeProfileModal();
+							// Xóa trắng ô nhập sau khi thành công
+							$("#old-pass").val("");
+							$("#new-pass").val("");
+						} else {
+							// Hiển thị lỗi từ Backend (ví dụ: mật khẩu cũ sai)
+							alert(res.message);
+						}
+					},
+					error: function () {
+						alert("Có lỗi xảy ra khi kết nối với máy chủ.");
+					}
+				});
+			}
+		</script>

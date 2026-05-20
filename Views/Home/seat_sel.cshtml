@@ -1,0 +1,157 @@
+﻿@{
+    Layout = null;
+    var seatMap = ViewBag.SeatMap as List<string> ?? new List<string>();
+    var bookedSeats = ViewBag.BookedSeats as List<string> ?? new List<string>();
+    var seatIdMap = ViewBag.SeatIdMap as Dictionary<string, int> ?? new Dictionary<string, int>();
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chọn ghế - @ViewBag.MovieTitle</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="@Url.Content("~/seat_selection/css/style.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")"></script>
+    <script src="@Url.Content("~/seat_selection/js/jquery.seat-charts.js")"></script>
+    <style>
+        .available-seat { background-color: #f3f3f3; border: 1px solid #ccc; }
+        #selected-seats { max-height: 150px; overflow-y: auto; list-style: none; padding: 0; }
+        .selected-item { font-size: 0.9em; margin-bottom: 5px; color: #df0e62; }
+        /* Ẩn nút xác nhận cũ theo yêu cầu */
+        #book-ticket { display: none !important; }
+        /* Tối ưu giao diện khi dùng trong iframe */
+        .booking-details { padding: 10px; }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="main">
+            <div class="demo">
+                <div id="seat-map">
+                    <div class="front">MÀN HÌNH</div>
+                </div>
+
+                <div class="booking-details">
+                    <ul class="book-left">
+                        <li>Số lượng</li>
+                        <li>Tổng tiền</li>
+                        <li>Ghế chọn</li>
+                    </ul>
+                    <ul class="book-right">
+                        <li>: <span id="counter">0</span></li>
+                        <li>: <b><i>VND </i><span id="total">0</span></b></li>
+                    </ul>
+                    <div class="clear"></div>
+                    <ul id="selected-seats" class="scrollbar scrollbar1"></ul>
+                    
+                    <div id="legend"></div>
+                    
+                    @* Nút này đã bị ẩn bằng CSS ở trên *@
+                    <button id="book-ticket"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Khai báo biến toàn cục (Global Scope)
+        var price = @(ViewBag.Price ?? 0);
+        var seatIdMap = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(seatIdMap));
+        var sc; 
+
+        $(document).ready(function () {
+            var $cart = $('#selected-seats'),
+                $counter = $('#counter'),
+                $total = $('#total');
+
+            // 2. KHÔNG dùng 'var sc' ở đây, dùng biến sc đã khai báo ở trên
+            sc = $('#seat-map').seatCharts({
+                map: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(seatMap)),
+                seats: {
+                    a: {
+                        price: price,
+                        classes: 'available-seat',
+                        category: 'Ghế thường'
+                    }
+                },
+                naming: {
+                    top: false,
+                    getLabel: function (character, row, column) {
+                        return column;
+                    }
+                },
+                legend: {
+                    node: $('#legend'),
+                    items: [
+                        ['a', 'available', 'Còn trống'],
+                        ['a', 'unavailable', 'Đã đặt'],
+                        ['a', 'selected', 'Đang chọn']
+                    ]
+                },
+                click: function () {
+                    if (this.status() == 'available') {
+                        $('<li class="selected-item">Hàng ' + this.settings.row + ' Ghế ' + this.settings.label + '</li>')
+                            .attr('id', 'cart-item-' + this.settings.id)
+                            .appendTo($cart);
+
+                        var count = sc.find('selected').length + 1;
+                        $counter.text(count);
+                        $total.text((count * price).toLocaleString('vi-VN')); 
+
+                        // --- THÊM DÒNG NÀY ---
+                        if (window.parent && window.parent.updatePaymentButtonStatus) {
+                            window.parent.updatePaymentButtonStatus(true); // Có ghế -> Mở nút
+                        }
+                        // ----------------------
+
+                        return 'selected';
+                    } else if (this.status() == 'selected') {
+                        var count = sc.find('selected').length - 1;
+                        $counter.text(count);
+                        $total.text((count * price).toLocaleString('vi-VN'));
+
+                        $('#cart-item-' + this.settings.id).remove();
+
+                        // --- THÊM LOGIC NÀY ---
+                        if (window.parent && window.parent.updatePaymentButtonStatus) {
+                            // Nếu sau khi bỏ chọn mà count vẫn > 0 thì vẫn mở, ngược lại thì khóa
+                            window.parent.updatePaymentButtonStatus(count > 0);
+                        }
+                        // ----------------------
+
+                        return 'available';
+                    } else {
+                        return this.style();
+                    }
+                }
+            });
+
+            // Đánh dấu ghế đã đặt từ database
+            sc.get(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(bookedSeats))).status('unavailable');
+        });
+
+        /**
+         * 3. Gán hàm vào window để Ticket_booking.cshtml (trang cha) 
+         * có thể gọi: iframe.contentWindow.getSelectedSeatIds()
+         */
+        window.getSelectedSeatIds = function() {
+            var ids = [];
+            if (sc) {
+                sc.find('selected').each(function () {
+                    // Ánh xạ ID của seat-charts (vd: 1_2) sang ID thật trong DB (vd: 105)
+                    var realId = seatIdMap[this.settings.id];
+                    if (realId) {
+                        ids.push(realId);
+                    }
+                });
+            }
+            return ids;
+        };
+    </script>
+
+    <script src="@Url.Content("~/seat_selection/js/theme-change-seat-sel.js")"></script>
+    <script src="@Url.Content("~/seat_selection/js/jquery.nicescroll.js")"></script>
+    <script src="@Url.Content("~/seat_selection/js/scripts.js")"></script>
+</body>
+</html>

@@ -1,0 +1,270 @@
+﻿@model List<BookingHistoryViewModel>
+
+@{
+    ViewData["Title"] = "Lịch sử đặt vé";
+}
+
+<!doctype html>
+<html lang="zxx">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Home</title>
+
+	<link rel="stylesheet" href="~/css/style-starter.css">
+	<link href="//fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,600&display=swap"
+		rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="~/css/user-profile.css">
+</head>
+
+<link rel="stylesheet" href="~/css/style-starter.css">
+
+<header id="site-header" class="w3l-header fixed-top">
+	<!--/nav-->
+	<nav class="navbar navbar-expand-lg navbar-light fill px-lg-0 py-0 px-3">
+		<div class="container">
+			<h1>
+				<a class="navbar-brand" asp-action="Index">
+					<span class="fa fa-play icon-log"
+						  aria-hidden="true"></span>
+					MyShowz
+				</a>
+			</h1>
+			<!-- if logo is image enable this
+						<a class="navbar-brand" href="#Index.cshtml">
+							<img src="image-path" alt="Your logo" title="Your logo" style="height:35px;" />
+						</a> -->
+			<button class="navbar-toggler collapsed" type="button" data-toggle="collapse"
+					data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+					aria-label="Toggle navigation">
+				<!-- <span class="navbar-toggler-icon"></span> -->
+				<span class="fa icon-expand fa-bars"></span>
+				<span class="fa icon-close fa-times"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item">
+						<a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" asp-controller="Home" asp-action="Movies">Movies</a>
+					</li>
+
+					<li class="nav-item active">
+						<a class="nav-link" asp-controller="Home" asp-action="About">About</a>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" asp-controller="Home" asp-action="Contact_Us">Contact</a>
+					</li>
+					<li class="nav-item active">
+						<a class="nav-link" asp-controller="Home" asp-action="BookingHistory">History</a>
+					</li>
+				</ul>
+
+				<!--/search-right-->
+				<!--/search-right-->
+
+				<div class="Login_SignUp" id="login_section" style="font-size: 2rem; display: inline-block; position: relative; margin-left: 15px;">
+					@if (User.Identity.IsAuthenticated)
+					{
+						<a class="nav-link" href="javascript:void(0)" id="userDropdown" style="padding: 0;">
+							<i class="fa fa-user-circle-o"></i>
+						</a>
+
+						<div class="user-dropdown-content" id="myDropdown">
+							<div class="dropdown-header">Xin chào, <b>@User.Identity.Name</b></div>
+							<hr style="margin: 5px 0;" />
+							<a href="javascript:void(0)" onclick="openProfileModal()">
+								<i class="fa fa-user-o"></i> Thông tin cá nhân
+							</a>
+							<form asp-controller="Home" asp-action="Logout" method="post" id="logoutForm" style="display: block;">
+								@Html.AntiForgeryToken()
+								<button type="submit" class="btn-logout">
+									<i class="fa fa-sign-out"></i> Đăng xuất
+								</button>
+							</form>
+						</div>
+					}
+					else
+					{
+						<a class="nav-link" asp-controller="Home" asp-action="Sign_In" title="Login">
+							<i class="fa fa-user-circle-o"></i>
+						</a>
+					}
+				</div>
+
+				<div id="profileModal" class="modal-custom">
+					<div class="modal-content-custom">
+						<span class="close-modal" onclick="closeProfileModal()">&times;</span>
+						<h2 style="color: #df0e62; margin-bottom: 20px;">Thông tin cá nhân</h2>
+						@Html.AntiForgeryToken()
+						<div class="profile-info" style="text-align: left; font-size: 1rem;">
+							<p><strong>Tên đăng nhập:</strong> <span>@User.Identity.Name</span></p>
+							<p><strong>Email:</strong> <span>@User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Email)?.Value</span></p>
+							<hr style="margin: 20px 0;" />
+							<h3 style="font-size: 1.2rem; margin-bottom: 15px;">Đổi mật khẩu</h3>
+							<input type="password" placeholder="Mật khẩu cũ" id="old-pass" class="form-control-custom">
+							<input type="password" placeholder="Mật khẩu mới" id="new-pass" class="form-control-custom">
+							<button class="btn-save-pw" onclick="changePassword()">Cập nhật mật khẩu</button>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<!-- toggle switch for light and dark theme -->
+			<div class="mobile-position">
+				<nav class="navigation">
+					<div class="theme-switch-wrapper">
+						<label class="theme-switch" for="checkbox">
+							<input type="checkbox" id="checkbox">
+							<div class="mode-container">
+								<i class="gg-sun"></i>
+								<i class="gg-moon"></i>
+							</div>
+						</label>
+					</div>
+				</nav>
+			</div>
+		</div>
+	</nav>
+</header>
+<div class="w3l-breadcrumbs">
+	<nav id="breadcrumbs" class="breadcrumbs">
+		<div class="container page-wrapper">
+			<a asp-action="Index">Home</a> » <span class="breadcrumb_last" aria-current="page">History</span>
+		</div>
+	</nav>
+</div>
+<section class="w3l-grids" style="padding-top: 1px;">
+    <div class="grids-main py-5">
+        <div class="container py-lg-4">
+
+            <div class="headerhny-title text-center">
+                <h3 class="hny-title" style="margin-bottom: 40px;">Lịch sử đặt vé</h3>
+            </div>
+            <div class="table-responsive" style="background: var(--bg-color); padding: 20px; border-radius: 8px;">
+    <table class="table table-hover">
+        <thead style="background: var(--theme-rose); color: #fff;">
+            <tr>
+                <th scope="col">Phim</th>
+                <th scope="col">Rạp</th>
+                <th scope="col">Phòng</th>
+                <th scope="col">Thời gian</th>
+                <th scope="col">Row</th>  <th scope="col">Seat</th> <th scope="col">Tổng tiền</th>
+                <th scope="col">Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr style="color: var(--title-color); vertical-align: middle;">
+                    <td style="font-weight: 600;">@item.MovieTitle</td>
+                    <td>@item.CinemaName</td>
+                    <td>@item.ScreenName</td>
+                    <td>@item.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
+                    
+                    <td style="font-weight: bold; color: var(--theme-rose);">@item.SRow</td>
+                    
+                    <td><span class="badge badge-secondary">@item.Seats</span></td>
+                    
+                    <td style="font-weight: 600;">@item.TotalPrice.ToString("N0") VNĐ</td>
+                    <td>
+                        @if (item.Status == "Success" || item.Status == "Paid")
+                        {
+                            <span class="badge badge-success" style="background-color: #28a745;">Đã thanh toán</span>
+                        }
+                        else if (item.Status == "Cancelled")
+                        {
+                            <span class="badge badge-danger" style="background-color: #dc3545;">Đã hủy</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-warning" style="background-color: #ffc107; color: #212529;">Đang xử lý</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+        </div>
+    </div>
+</section>
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<script src="~/js/bootstrap.min.js"></script>
+		<script>
+			$(document).ready(function () {
+				// Toggle Dropdown
+				$("#userDropdown").on("click", function (e) {
+					$("#myDropdown").toggleClass("show");
+					e.stopPropagation();
+				});
+
+				// Click ra ngoài thì đóng dropdown
+				$(document).on("click", function (e) {
+					if (!$(e.target).closest('#login_section').length) {
+						$("#myDropdown").removeClass("show");
+					}
+				});
+			});
+
+			function openProfileModal() {
+				$("#profileModal").fadeIn(300);
+				$("#myDropdown").removeClass("show");
+			}
+
+			function closeProfileModal() {
+				$("#profileModal").fadeOut(300);
+			}
+
+			// Đóng modal khi nhấn ra ngoài vùng trắng
+			window.onclick = function(event) {
+				let modal = document.getElementById("profileModal");
+				if (event.target == modal) {
+					closeProfileModal();
+				}
+			}
+
+			function changePassword() {
+				const oldPw = $("#old-pass").val();
+				const newPw = $("#new-pass").val();
+    
+				// Lấy Token để gửi lên server (tránh lỗi 400)
+				const token = $('input[name="__RequestVerificationToken"]').val();
+
+				if (!oldPw || !newPw) {
+					alert("Vui lòng nhập đầy đủ mật khẩu cũ và mới!");
+					return;
+				}
+
+				// Gửi yêu cầu AJAX lên Controller
+				$.ajax({
+					url: '/Home/ChangePassword',
+					type: 'POST',
+					data: {
+						__RequestVerificationToken: token, 
+						oldPassword: oldPw,
+						newPassword: newPw
+					},
+					success: function (res) {
+						if (res.success) {
+							alert(res.message);
+							closeProfileModal();
+							// Xóa trắng ô nhập sau khi thành công
+							$("#old-pass").val("");
+							$("#new-pass").val("");
+						} else {
+							// Hiển thị lỗi từ Backend (ví dụ: mật khẩu cũ sai)
+							alert(res.message);
+						}
+					},
+					error: function () {
+						alert("Có lỗi xảy ra khi kết nối với máy chủ.");
+					}
+				});
+			}
+		</script>

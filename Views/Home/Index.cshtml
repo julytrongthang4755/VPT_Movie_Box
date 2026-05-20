@@ -1,0 +1,762 @@
+@model List<VPT_Movie_Box.Models.Movie>
+<!doctype html>
+<html lang="zxx">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Home</title>
+
+	<link rel="stylesheet" href="~/css/style-starter.css">
+	<link href="//fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,600&display=swap"
+		  rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="~/css/user-profile.css">
+</head>
+
+<body>
+
+	<!-- header -->
+	<header id="site-header" class="w3l-header fixed-top">
+		<!--/nav-->
+		<nav class="navbar navbar-expand-lg navbar-light fill px-lg-0 py-0 px-3">
+			<div class="container">
+				<h1>
+					<a class="navbar-brand" asp-controller="Home" asp-action="Index">
+						<img src="@(Url.Content("~/images/favicon.ico"))" alt="StarBugCinema logo"
+							 style="width:24px; height:24px; vertical-align:middle; margin-right:8px;" />
+						StarBugCinema
+					</a>
+				</h1>
+
+				<button class="navbar-toggler collapsed" type="button" data-toggle="collapse"
+					data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<!-- <span class="navbar-toggler-icon"></span> -->
+					<span class="fa icon-expand fa-bars"></span>
+					<span class="fa icon-close fa-times"></span>
+				</button>
+
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item active">
+							<a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" asp-controller="Home" asp-action="Movies">Movies</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" asp-controller="Home" asp-action="About">About</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" asp-controller="Home" asp-action="Contact_Us">Contact</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" asp-controller="Home" asp-action="BookingHistory">History</a>
+						</li>
+					</ul>
+
+					<!--/search-right-->
+					<!--/search-right-->
+					<div class="search-right">
+						<a href="#search" class="btn search-hny mr-lg-3 mt-lg-0 mt-4" title="search">Search <span
+								class="fa fa-search ml-3" aria-hidden="true"></span></a>
+						<!-- search popup -->
+						<div id="search" class="pop-overlay">
+							<div class="popup">
+								<form action="#" method="post" class="search-box">
+									<input type="search" placeholder="Search your Keyword" name="search"
+										required="required" autofocus="">
+									<button type="submit" class="btn"><span class="fa fa-search"
+											aria-hidden="true"></span></button>
+								</form>
+								<div class="browse-items">
+									<h3 class="hny-title two mt-md-5 mt-4">Browse all:</h3>
+									<ul class="search-items">
+										<li><a asp-controller="Home" asp-action="Movies">Action</a></li>
+										<li><a asp-controller="Home" asp-action="Movies">Drama</a></li>
+										<li><a asp-controller="Home" asp-action="Movies">Family</a></li>
+										<li><a asp-controller="Home" asp-action="Movies">Thriller</a></li>
+										<li><a asp-controller="Home" asp-action="Movies">Commedy</a></li>
+										<li><a asp-controller="Home" asp-action="Movies">Romantic</a></li>
+										<li><a asp-controller="Home" asp-action="Movies">Tv-Series</a></li>
+										<li><a asp-controller="Home" asp-action="Movies">Horror</a></li>
+										<li><a asp-controller="Home" asp-action="Movies">Action</a></li>
+										<li><a asp-controller="Home" asp-action="Movies">Drama</a></li>
+										<li><a asp-controller="Home" asp-action="Movies">Family</a></li>
+										<li><a asp-controller="Home" asp-action="Movies">Thriller</a></li>
+										<li><a asp-controller="Home" asp-action="Movies">Commedy</a></li>
+										<li><a asp-controller="Home" asp-action="Movies">Romantic</a></li>
+										<li><a asp-controller="Home" asp-action="Movies">Tv-Series</a></li>
+										<li><a asp-controller="Home" asp-action="Movies">Horror</a></li>
+									</ul>
+								</div>
+							</div>
+							<a class="close" href="#close">×</a>
+						</div>
+						<!-- /search popup -->
+						<!--/search-right-->
+
+					</div>
+
+					<div class="Login_SignUp" id="login_section" style="font-size: 2rem; display: inline-block; position: relative; margin-left: 15px;">
+						@if (User.Identity.IsAuthenticated)
+						{
+							<a class="nav-link" href="javascript:void(0)" id="userDropdown" style="padding: 0;">
+								<i class="fa fa-user-circle-o"></i>
+							</a>
+        
+							<div class="user-dropdown-content" id="myDropdown">
+								<div class="dropdown-header">Xin chào, <b>@User.Identity.Name</b></div>
+								<hr style="margin: 5px 0;" />
+								<a href="javascript:void(0)" onclick="openProfileModal()">
+									<i class="fa fa-user-o"></i> Thông tin cá nhân
+								</a>
+								<form asp-controller="Home" asp-action="Logout" method="post" id="logoutForm" style="display: block;">
+									@Html.AntiForgeryToken()
+									<button type="submit" class="btn-logout">
+										<i class="fa fa-sign-out"></i> Đăng xuất
+									</button>
+								</form>
+							</div>
+						}
+						else
+						{
+							<a class="nav-link" asp-controller="Home" asp-action="Sign_In" title="Login">
+								<i class="fa fa-user-circle-o"></i>
+							</a>
+						}
+					</div>
+
+					<div id="profileModal" class="modal-custom">
+						<div class="modal-content-custom">
+							<span class="close-modal" onclick="closeProfileModal()">&times;</span>
+							<h2 style="color: #df0e62; margin-bottom: 20px;">Thông tin cá nhân</h2>
+							@Html.AntiForgeryToken()
+							<div class="profile-info" style="text-align: left; font-size: 1rem;">
+								<p><strong>Tên đăng nhập:</strong> <span>@User.Identity.Name</span></p>
+								<p><strong>Email:</strong> <span>@User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Email)?.Value</span></p>
+								<hr style="margin: 20px 0;" />
+								<h3 style="font-size: 1.2rem; margin-bottom: 15px;">Đổi mật khẩu</h3>
+								<input type="password" placeholder="Mật khẩu cũ" id="old-pass" class="form-control-custom">
+								<input type="password" placeholder="Mật khẩu mới" id="new-pass" class="form-control-custom">
+								<button class="btn-save-pw" onclick="changePassword()">Cập nhật mật khẩu</button>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<!-- toggle switch for light and dark theme -->
+				<div class="mobile-position">
+					<nav class="navigation">
+						<div class="theme-switch-wrapper">
+							<label class="theme-switch" for="checkbox">
+								<input type="checkbox" id="checkbox">
+								<div class="mode-container">
+									<i class="gg-sun"></i>
+									<i class="gg-moon"></i>
+								</div>
+							</label>
+						</div>
+					</nav>
+				</div>
+			</div>
+		</nav>
+	</header>
+	<!-- main-slider -->
+	<section class="w3l-main-slider position-relative" id="home">
+		<div class="companies20-content">
+			<div class="owl-one owl-carousel owl-theme">
+				<div class="item">
+					<li>
+						<div class="slider-info banner-view bg bg2">
+							<div class="banner-info">
+								<h3>Spider-Man: Brand New Day </h3>
+								<p>Spider-Man returns with an exciting new mission as Peter Parker faces a powerful threat while balancing his life and hero duties. Action-packed and full of surprises!.</span></p>
+								<a href="#small-dialog1" class="popup-with-zoom-anim play-view1">
+									<span class="video-play-icon">
+										<span class="fa fa-play"></span>
+									</span>
+									<h6>Watch Trailer</h6>
+								</a>
+								<div id="small-dialog1" class="zoom-anim-dialog mfp-hide">
+									<iframe src="https://www.youtube.com/embed/8TZMtslA3UY?start=33" allow="autoplay; fullscreen"
+											allowfullscreen=""></iframe>
+								</div>
+							</div>
+						</div>
+					</li>
+				</div>
+				<div class="item">
+					<li>
+						<div class="slider-info  banner-view banner-top1 bg bg2">
+							<div class="banner-info">
+								<h3>Toy Story 5</h3>
+								<p>Woody, Buzz, and their friends return for a new adventure filled with fun, friendship, and heartfelt moments as they face new challenges together.</span></p>
+								<a href="#small-dialog2" class="popup-with-zoom-anim play-view1">
+									<span class="video-play-icon">
+										<span class="fa fa-play"></span>
+									</span>
+									<h6>Watch Trailer</h6>
+								</a>
+								<div id="small-dialog2" class="zoom-anim-dialog mfp-hide">
+									<iframe src="https://www.youtube.com/embed/c51ND9Hdbw0" allow="autoplay; fullscreen"
+											allowfullscreen=""></iframe>
+								</div>
+							</div>
+						</div>
+					</li>
+				</div>
+				<div class="item">
+					<li>
+						<div class="slider-info banner-view banner-top2 bg bg2">
+							<div class="banner-info">
+								<h3>Avengers:Doomsday</h3>
+								<p>The Avengers unite once again to face a world-ending threat, pushing their strength and teamwork to the limit in an epic battle for humanity’s future.</span></p>
+								<a href="#small-dialog3" class="popup-with-zoom-anim play-view1">
+									<span class="video-play-icon">
+										<span class="fa fa-play"></span>
+									</span>
+									<h6>Watch Trailer</h6>
+								</a>
+								<div id="small-dialog3" class="zoom-anim-dialog mfp-hide">
+									<iframe src="https://www.youtube.com/embed/399Ez7WHK5s" allow="autoplay; fullscreen"
+											allowfullscreen=""></iframe>
+								</div>
+							</div>
+						</div>
+					</li>
+				</div>
+				<div class="item">
+					<li>
+						<div class="slider-info banner-view banner-top3 bg bg2">
+							<div class="banner-info">
+								<h3>The Odyssey</h3>
+								<p>A legendary hero embarks on a long and dangerous journey home, facing mythical creatures and countless challenges along the way.</span></p>
+								<a href="#small-dialog4" class="popup-with-zoom-anim play-view1">
+									<span class="video-play-icon">
+										<span class="fa fa-play"></span>
+									</span>
+									<h6>Watch Trailer</h6>
+								</a>
+								<div id="small-dialog4" class="zoom-anim-dialog mfp-hide">
+									<iframe src="https://www.youtube.com/embed/Mzw2ttJD2qQ" allow="autoplay; fullscreen"
+											allowfullscreen=""></iframe>
+								</div>
+							</div>
+						</div>
+					</li>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- main-slider -->
+	<!--grids-sec1-->
+	<section class="w3l-grids">
+		<div class="grids-main py-5">
+			<div class="container py-lg-3">
+				<div class="headerhny-title">
+					<div class="w3l-title-grids">
+						<div class="headerhny-left">
+							<h3 class="hny-title">Trending Movies</h3>
+						</div>
+						<div class="headerhny-right text-lg-right">
+							<h4><a class="show-title" asp-controller="Home" asp-action="Movies">Show all</a></h4>
+						</div>
+					</div>
+				</div>
+				<div class="owl-three owl-carousel owl-theme">
+
+					@foreach (var movie in Model)
+					{
+						<div class="item vhny-grid">
+
+							<div class="box16 mb-0">
+								<a asp-controller="Home" asp-action="Ticket_Booking" asp-route-id="@movie.MovieId">
+
+									<figure>
+										<img class="img-fluid" src="@movie.PosterUrl">
+									</figure>
+
+									<div class="box-content">
+										<h4>
+											<span class="post">
+												<span class="fa fa-clock-o"></span>
+												@movie.Duration min
+											</span>
+										</h4>
+									</div>
+
+								</a>
+							</div>
+
+							<h3>
+								<a class="title-gd">@movie.Title</a>
+							</h3>
+
+							<p>@movie.Description</p>
+
+						</div>
+					}
+				</div>
+			</div>
+
+		</div>
+	</section>
+	<!--//grids-sec1-->
+	<!--grids-sec2-->
+	<section class="w3l-grids">
+		<div class="grids-main py-5">
+			<div class="container py-lg-3">
+				<div class="headerhny-title">
+					<div class="w3l-title-grids">
+						<div class="headerhny-left">
+							<h3 class="hny-title">New Releases</h3>
+						</div>
+						<div class="headerhny-right text-lg-right">
+							<h4><a class="show-title" asp-controller="Home" asp-action="Movies">Show all</a></h4>
+						</div>
+					</div>
+				</div>
+				<div class="owl-three owl-carousel owl-theme">
+
+				@foreach (var movie in Model)
+				{
+					<div class="item vhny-grid">
+
+						<div class="box16 mb-0">
+							<a asp-controller="Home" asp-action="Ticket_Booking" asp-route-id="@movie.MovieId">
+
+								<figure>
+									<img class="img-fluid" src="@movie.PosterUrl">
+								</figure>
+
+								<div class="box-content">
+									<h4>
+										<span class="post">
+											<span class="fa fa-clock-o"></span>
+											@movie.Duration min
+										</span>
+									</h4>
+								</div>
+
+							</a>
+						</div>
+
+						<h3>
+							<a class="title-gd">@movie.Title</a>
+						</h3>
+
+						<p>@movie.Description</p>
+
+					</div>
+				}
+				</div>
+			</div>
+
+		</div>
+	</section>
+	<!--grids-sec2-->
+	<!--mid-slider -->
+	<section class="w3l-mid-slider position-relative">
+		<div class="companies20-content">
+			<div class="owl-mid owl-carousel owl-theme">
+				<div class="item">
+					<a href="https://your-ad-target-1.example" target="_blank" rel="noopener">
+						<img class="img-fluid" src="~/images/bannerteamflash.jpg" alt="Advertisement 1" />
+					</a>
+				</div>
+				<div class="item">
+					<a href="https://your-ad-target-2.example" target="_blank" rel="noopener">
+						<img class="img-fluid" src="~/images/bts.jpg" alt="Advertisement 2" />
+					</a>
+				</div>
+				<div class="item">
+					<a href="https://your-ad-target-3.example" target="_blank" rel="noopener">
+						<img class="img-fluid" src="~/images/ad-banner3.jpg" alt="Advertisement 3" />
+					</a>
+				</div>
+				<div class="item">
+					<a href="https://your-ad-target-4.example" target="_blank" rel="noopener">
+						<img class="img-fluid" src="~/images/ad-banner4.jpg" alt="Advertisement 4" />
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- footer-66 -->
+	<footer class="w3l-footer">
+		<section class="footer-inner-main">
+			<div class="footer-hny-grids py-5">
+				<div class="container py-lg-4">
+					<div class="text-txt">
+						<div class="right-side">
+							<div class="row footer-links">
+								<div class="col-md-3 col-sm-6 sub-two-right mt-5">
+									<h6>About Us</h6>
+									<ul>
+										<li><a asp-controller="Home" asp-action="Index">Home</a></li>
+										<li><a asp-controller="Home" asp-action="Movies">Movies</a></li>
+										<li><a asp-controller="Home" asp-action="About">About</a></li>
+										<li><a asp-controller="Home" asp-action="Contact_Us">Contact</a></li>
+									</ul>
+								</div>
+
+								<div class="col-md-3 col-sm-6 sub-two-right mt-5">
+									<h6>Connect With Us</h6>
+									<ul>
+										<li>
+											<a href="https://www.facebook.com/thangrhino475"><span class="fa fa-facebook" aria-hidden="true">     Nguyễn Trọng Thăng</span></a>
+										</li>
+										<li>
+											<a href="https://github.com/julytrongthang4755/VPT_Movie_Box"><span class="fa fa-github" aria-hidden="true">    Nguyễn Trọng Thăng</span></a>
+										</li>
+										<li>
+											<a href="https://www.instagram.com/july4th_05"><span class="fa fa-instagram" aria-hidden="true">     Nguyễn Trọng Thăng</span></a>
+										</li>
+									</ul>
+								</div>
+
+								<div class="col-md-3 col-sm-6 sub-two-right mt-5">
+									<h6>Location</h6>
+									<p>
+										Head Office Address:<br /> 1st Floor, No. 234 Hoang Quoc Viet Street,Nghia Do Ward, Hanoi, Vietnam.
+									</p><br />
+									<h6>StarBug Joint Stock Company</h6>
+									<p>
+										Business Registration Certificate No.0123456789
+									</p>
+								</div>
+
+								<div class="col-md-3 col-sm-6 sub-two-right mt-5">
+									<h6>Customer Service</h6>
+									<p>
+										Hotline: 1000 0001 <br /> Working Hours: 8:00 AM – 12:00 PM (Including Holidays)<br />
+										Support Email: nguyentrongthang938@gmail.com .
+									</p>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="below-section">
+				<div class="container">
+					<div class="copyright-footer">
+						<div class="columns text-lg-left">
+							<p>&copy; 2026 StarBugCinema. All rights reserved</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- move top -->
+			<button onclick="topFunction()" id="movetop" title="Go to top">
+				<span class="fa fa-arrow-up" aria-hidden="true"></span>
+			</button>
+	<script>
+		// When the user scrolls down 20px from the top of the document, show the button
+		window.onscroll = function () {
+			scrollFunction()
+		};
+
+		function scrollFunction() {
+			if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+				document.getElementById("movetop").style.display = "block";
+			} else {
+				document.getElementById("movetop").style.display = "none";
+			}
+		}
+
+		// When the user clicks on the button, scroll to the top of the document
+		function topFunction() {
+			document.body.scrollTop = 0;
+			document.documentElement.scrollTop = 0;
+		}
+	</script>
+			<!-- /move top -->
+
+		</section>
+	</footer>
+
+
+
+</body>
+
+</html>
+<!-- responsive tabs -->
+<script src="~/js/jquery-1.9.1.min.js"></script>
+<script src="~/js/easyResponsiveTabs.js"></script>
+		<script>
+			$(document).ready(function () {
+				// Toggle Dropdown
+				$("#userDropdown").on("click", function (e) {
+					$("#myDropdown").toggleClass("show");
+					e.stopPropagation();
+				});
+
+				// Click ra ngoài thì đóng dropdown
+				$(document).on("click", function (e) {
+					if (!$(e.target).closest('#login_section').length) {
+						$("#myDropdown").removeClass("show");
+					}
+				});
+			});
+
+			function openProfileModal() {
+				$("#profileModal").fadeIn(300);
+				$("#myDropdown").removeClass("show");
+			}
+
+			function closeProfileModal() {
+				$("#profileModal").fadeOut(300);
+			}
+
+			// Đóng modal khi nhấn ra ngoài vùng trắng
+			window.onclick = function(event) {
+				let modal = document.getElementById("profileModal");
+				if (event.target == modal) {
+					closeProfileModal();
+				}
+			}
+
+			function changePassword() {
+				const oldPw = $("#old-pass").val();
+				const newPw = $("#new-pass").val();
+    
+				// Lấy Token để gửi lên server (tránh lỗi 400)
+				const token = $('input[name="__RequestVerificationToken"]').val();
+
+				if (!oldPw || !newPw) {
+					alert("Vui lòng nhập đầy đủ mật khẩu cũ và mới!");
+					return;
+				}
+
+				// Gửi yêu cầu AJAX lên Controller
+				$.ajax({
+					url: '/Home/ChangePassword',
+					type: 'POST',
+					data: {
+						__RequestVerificationToken: token, 
+						oldPassword: oldPw,
+						newPassword: newPw
+					},
+					success: function (res) {
+						if (res.success) {
+							alert(res.message);
+							closeProfileModal();
+							// Xóa trắng ô nhập sau khi thành công
+							$("#old-pass").val("");
+							$("#new-pass").val("");
+						} else {
+							// Hiển thị lỗi từ Backend (ví dụ: mật khẩu cũ sai)
+							alert(res.message);
+						}
+					},
+					error: function () {
+						alert("Có lỗi xảy ra khi kết nối với máy chủ.");
+					}
+				});
+			}
+		</script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			//Horizontal Tab
+			$('#parentHorizontalTab').easyResponsiveTabs({
+				type: 'default', //Types: default, vertical, accordion
+				width: 'auto', //auto or any width like 600px
+				fit: true, // 100% fit in a container
+				tabidentify: 'hor_1', // The tab groups identifier
+				activate: function (event) { // Callback function if tab is switched
+					var $tab = $(this);
+					var $info = $('#nested-tabInfo');
+					var $name = $('span', $info);
+					$name.text($tab.text());
+					$info.show();
+				}
+			});
+		});
+	</script>
+<!--/theme-change-->
+<script src="~/js/theme-change.js"></script>
+<script src="~/js/owl.carousel.js"></script>
+<!-- script for banner slider-->
+<script>
+	$(document).ready(function () {
+		$('.owl-one').owlCarousel({
+			stagePadding: 280,
+			loop: true,
+			margin: 20,
+			nav: true,
+			responsiveClass: true,
+			autoplay: true,
+			autoplayTimeout: 5000,
+			autoplaySpeed: 1000,
+			autoplayHoverPause: false,
+			responsive: {
+				0: {
+					items: 1,
+					stagePadding: 40,
+					nav: false
+				},
+				480: {
+					items: 1,
+					stagePadding: 60,
+					nav: true
+				},
+				667: {
+					items: 1,
+					stagePadding: 80,
+					nav: true
+				},
+				1000: {
+					items: 1,
+					nav: true
+				}
+			}
+		})
+	})
+</script>
+<script>
+	$(document).ready(function () {
+		$('.owl-three').owlCarousel({
+			loop: true,
+			margin: 20,
+			nav: false,
+			responsiveClass: true,
+			autoplay: true,
+			autoplayTimeout: 5000,
+			autoplaySpeed: 1000,
+			autoplayHoverPause: false,
+			responsive: {
+				0: {
+					items: 2,
+					nav: false
+				},
+				480: {
+					items: 2,
+					nav: true
+				},
+				667: {
+					items: 3,
+					nav: true
+				},
+				1000: {
+					items: 5,
+					nav: true
+				}
+			}
+		})
+	})
+</script>
+<script>
+	$(document).ready(function () {
+		$('.owl-mid').owlCarousel({
+			loop: true,
+			margin: 0,
+			nav: false,
+			responsiveClass: true,
+			autoplay: true,
+			autoplayTimeout: 5000,
+			autoplaySpeed: 1000,
+			autoplayHoverPause: false,
+			responsive: {
+				0: {
+					items: 1,
+					nav: false
+				},
+				480: {
+					items: 1,
+					nav: false
+				},
+				667: {
+					items: 1,
+					nav: true
+				},
+				1000: {
+					items: 1,
+					nav: true
+				}
+			}
+		})
+	})
+</script>
+<!-- script for owlcarousel -->
+<script src="~/js/jquery.magnific-popup.min.js"></script>
+<script>
+	$(document).ready(function () {
+		$('.popup-with-zoom-anim').magnificPopup({
+			type: 'inline',
+
+			fixedContentPos: false,
+			fixedBgPos: true,
+
+			overflowY: 'auto',
+
+			closeBtnInside: true,
+			preloader: false,
+
+			midClick: true,
+			removalDelay: 300,
+			mainClass: 'my-mfp-zoom-in'
+		});
+
+		$('.popup-with-move-anim').magnificPopup({
+			type: 'inline',
+
+			fixedContentPos: false,
+			fixedBgPos: true,
+
+			overflowY: 'auto',
+
+			closeBtnInside: true,
+			preloader: false,
+
+			midClick: true,
+			removalDelay: 300,
+			mainClass: 'my-mfp-slide-bottom'
+		});
+	});
+</script>
+<!-- disable body scroll which navbar is in active -->
+<script>
+	$(function () {
+		$('.navbar-toggler').click(function () {
+			$('body').toggleClass('noscroll');
+		})
+	});
+</script>
+<!-- disable body scroll which navbar is in active -->
+
+<!--/MENU-JS-->
+<script>
+	$(window).on("scroll", function () {
+		var scroll = $(window).scrollTop();
+
+		if (scroll >= 80) {
+			$("#site-header").addClass("nav-fixed");
+		} else {
+			$("#site-header").removeClass("nav-fixed");
+		}
+	});
+
+	//Main navigation Active Class Add Remove
+	$(".navbar-toggler").on("click", function () {
+		$("header").toggleClass("active");
+	});
+	$(document).on("ready", function () {
+		if ($(window).width() > 991) {
+			$("header").removeClass("active");
+		}
+		$(window).on("resize", function () {
+			if ($(window).width() > 991) {
+				$("header").removeClass("active");
+			}
+		});
+	});
+</script>
+
+<script src="~/js/bootstrap.min.js"></script>

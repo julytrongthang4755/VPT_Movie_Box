@@ -1,0 +1,431 @@
+﻿@model VPT_Movie_Box.Models.BookingViewModel
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ticket Booking</title>
+  <link rel="stylesheet" type="text/css" href="~/css/style-starter.css">
+  <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.css">
+  <link rel="stylesheet" type="text/css" href="~/css/progress.css">
+
+  <link rel="stylesheet" type="text/css" href="~/css/ticket-booking.css">
+
+  <!-- ..............For progress-bar............... -->
+  <link rel="stylesheet" type="text/css" href="~/css/E_ticket.css">
+  <link rel="stylesheet" type="text/css" href="~/css/user-profile.css">
+  <link rel="stylesheet" type="text/css" href="~/css/payment.css" />
+  <link rel="stylesheet" href="~/css/user-profile.css">
+  <link href="https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700" rel="stylesheet">
+
+
+    <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/theme-change.js"></script>
+
+    <script type="text/javascript" src="~/js/ticket-booking.js"></script>
+
+</head>
+
+<body>
+  <header id="site-header" class="w3l-header fixed-top">
+
+    <!--/nav-->
+    <nav class="navbar navbar-expand-lg navbar-light fill px-lg-0 py-0 px-3">
+      <div class="container">
+        <h1><a class="navbar-brand" asp-controller="Home" asp-action="Index"><span class="fa fa-play icon-log" aria-hidden="true"></span>
+            MyShowz </a></h1>
+        
+        <div 
+            class="collapse navbar-collapse" id="navbarSupportedContent">
+        </div>
+
+					<div class="Login_SignUp" id="login_section" style="font-size: 2rem; display: inline-block; position: relative; margin-left: 15px;">
+						@if (User.Identity.IsAuthenticated)
+						{
+							<a class="nav-link" href="javascript:void(0)" id="userDropdown" style="padding: 0;"> </a>
+        
+							<div class="user-dropdown-content" id="myDropdown">
+								<div class="dropdown-header">Xin chào, <b>@User.Identity.Name</b></div>
+								<hr style="margin: 5px 0;" />
+								<a href="javascript:void(0)" onclick="openProfileModal()">
+									<i class="fa fa-user-o"></i> Thông tin cá nhân
+								</a>
+								<form asp-controller="Home" asp-action="Logout" method="post" id="logoutForm" style="display: block;">
+									@Html.AntiForgeryToken()
+									<button type="submit" class="btn-logout">
+										<i class="fa fa-sign-out"></i> Đăng xuất
+									</button>
+								</form>
+							</div>
+						}
+					</div>
+
+					<div id="profileModal" class="modal-custom">
+						<div class="modal-content-custom">
+							<span class="close-modal" onclick="closeProfileModal()">&times;</span>
+							<h2 style="color: #df0e62; margin-bottom: 20px;">Thông tin cá nhân</h2>
+							<div class="profile-info" style="text-align: left; font-size: 1rem;">
+								<p><strong>Tên đăng nhập:</strong> <span>@User.Identity.Name</span></p>
+								<p><strong>Email:</strong> <span>@User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Email)?.Value</span></p>
+								<hr style="margin: 20px 0;" />
+								<h3 style="font-size: 1.2rem; margin-bottom: 15px;">Đổi mật khẩu</h3>
+								<input type="password" placeholder="Mật khẩu cũ" id="old-pass" class="form-control-custom">
+								<input type="password" placeholder="Mật khẩu mới" id="new-pass" class="form-control-custom">
+								<button class="btn-save-pw" onclick="changePassword()">Cập nhật mật khẩu</button>
+							</div>
+						</div>
+					</div>
+
+
+        <!-- toggle switch for light and dark theme -->
+        <div class="mobile-position">
+          <nav class="navigation">
+            <div class="theme-switch-wrapper">
+              <label class="theme-switch" for="checkbox">
+                <input type="checkbox" id="checkbox">
+                <div class="mode-container">
+                  <i class="gg-sun"></i>
+                  <i class="gg-moon"></i>
+                </div>
+              </label>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container" id="progress-container-id">
+    <div class="row">
+      <div class="col">
+        <div class="px-0 pt-4 pb-0 mt-3 mb-3">
+          <form id="form" method="post">
+            <ul id="progressbar" class="progressbar-class">
+              <li class="active" id="step1">Show timing selection</li>
+              <li id="step2" class="not_active">Seat Selection</li>
+              <li id="step3" class="not_active">Payment</li>
+              <li id="step4" class="not_active">E_ticket</li>
+            </ul>
+            <br>
+            <fieldset>
+              <div id="screen-select-div">
+                <h2>Show time Selection</h2>
+                    <div class="carousel carousel-nav" data-flickity='{"contain": true, "pageDots": false }'>
+                        @{
+                            // Lấy thời điểm hiện tại
+                            DateTime today = DateTime.Now;
+        
+                            for (int i = 0; i < 7; i++)
+                            {
+                                DateTime displayDate = today.AddDays(i);
+                                string dateNumeric = displayDate.ToString("dd");
+                                string dayName = "";
+
+                                // Xác định nhãn hiển thị (Today, Tomorrow hoặc Thứ trong tuần)
+                                if (i == 0) 
+                                {
+                                    dayName = "Today";
+                                }
+                                else if (i == 1) 
+                                {
+                                    dayName = "Tomorrow";
+                                }
+                                else 
+                                {
+                                    // Hiển thị tên thứ (Monday, Tuesday...)
+                                    dayName = displayDate.ToString("dddd"); 
+                                }
+
+                                // ID bắt đầu từ 1 để khớp với hàm JS myFunction của bạn
+                                int cellId = i + 1; 
+
+                                <div class="carousel-cell" id="@cellId" onclick="myFunction(@cellId)">
+                                    <div class="date-numeric">@dateNumeric</div>
+                                    <div class="date-day">@dayName</div>
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    <ul class="time-ul">
+                        @foreach (var show in Model.Showtimes)
+                        {
+                            // Thêm class dựa trên ngày để ẩn/hiện
+                            string dateClass = "date-" + show.StartTime.ToString("dd"); 
+        
+                            <li class="time-li @dateClass" style="display: none;"> <div class="screens">
+                                    @show.Screen.ScreenName - @show.StartTime.ToString("dd/MM")
+                                </div>
+
+                                <div class="time-btn">
+                                    <button type="button"
+                                            class="screen-time"
+                                            onclick="selectShowtime(@show.ShowtimeId, this)">
+                                        @show.StartTime.ToString("HH:mm")
+                                    </button>
+                                </div>
+                            </li>
+                        }
+                    </ul>                
+              </div>
+              <input id="screen-next-btn" type="button" name="next-step" class="next-step" value="Continue Booking" disabled />
+            </fieldset>
+            <fieldset>
+
+              <div>
+                  <iframe id="seat-sel-iframe"
+                            style="box-shadow: 0 14px 12px 0 var(--theme-border), 0 10px 50px 0 var(--theme-border); 
+                                   width: 100%; height: 550px; display: block; border: none; margin: 0 auto;"
+                            src='@Url.Action("seat_sel", "Home")?showtimeId=@Model.SelectedShowtimeId'>
+                  </iframe>      
+              </div>
+              <br>
+              <input type="button" id="btn-proceed-payment" name="next-step" class="next-step" value="Proceed to Payment" disabled />
+              <input type="button" name="previous-step" class="previous-step" value="Back" />
+            </fieldset>
+            <fieldset>
+              <!-- Payment Page -->
+              <div id="payment_div">
+                <div class="payment-row">
+                  <div class="col-75">
+                    <div class="payment-container">
+                      <div class="payment-row">
+                        <div class="col-50">
+                          <h3 id="payment-h3">Payment</h3>
+                          <div class="payment-row payment">
+                            <div class="col-50 payment">
+                              <label for="card" class="method card">
+                                <div class="icon-container">
+                                  <i class="fa fa-cc-visa" style="color: navy"></i>
+                                  <i class="fa fa-cc-amex" style="color: blue"></i>
+                                  <i class="fa fa-cc-mastercard" style="color: red"></i>
+                                  <i class="fa fa-cc-discover" style="color: orange"></i>
+                                </div>
+                                <div class="radio-input">
+                                  <input type="radio" id="card" />
+                                  Pay RS.200.00 with credit card
+                                </div>
+                              </label>
+                            </div>
+                            <div class="col-50 payment">
+                              <label for="paypal" class="method paypal">
+                                <div class="icon-container">
+                                  <i class="fa fa-paypal" style="color: navy"></i>
+                                </div>
+                                <div class="radio-input">
+                                  <input id="paypal" type="radio" checked>
+                                  Pay $30.00 with PayPal
+                                </div>
+                              </label>
+                            </div>
+                          </div>
+
+                          <div class="payment-row">
+                            <div class="col-50">
+                              <label for="cname">Cardholder's Name</label>
+                              <input type="text" id="cname" name="cardname" placeholder="Firstname Lastname" required />
+                            </div>
+                            <div class="col-50">
+                              <label for="ccnum">Credit card number</label>
+                              <input type="text" id="ccnum" name="cardnumber" placeholder="xxxx-xxxx-xxxx-xxxx"
+                                required />
+                            </div>
+                          </div>
+                          <div class="payment-row">
+                            <div class="col-50">
+                              <label for="expmonth">Exp Month</label>
+                              <input type="text" id="expmonth" name="expmonth" placeholder="September" required />
+                            </div>
+                            <div class="col-50">
+                              <div class="payment-row">
+                                <div class="col-50">
+                                  <label for="expyear">Exp Year</label>
+                                  <input type="text" id="expyear" name="expyear" placeholder="yyyy" required />
+                                </div>
+                                <div class="col-50">
+                                  <label for="cvv">CVV</label>
+                                  <input type="text" id="cvv" name="cvv" placeholder="xxx" required />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="next-step pay-btn">
+                Confirm Payment
+              </button>
+                <input type="button" name="previous-step"
+                       class="cancel-pay-btn"
+                       value="Cancel Payment"
+                       onclick="location.href='@Url.Action("Index","Home")'" />
+            </fieldset>
+
+            <fieldset>
+                <h2>Your E-Ticket</h2>
+                <div id="ticket-result-container">
+                    <iframe id="eticket-iframe" 
+                            style="width: 100%; height: 700px; border: none; display: block; margin: 0 auto; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);" 
+                            src="">
+                    </iframe>
+                </div>
+                <br>
+                <div style="text-align: center;">
+                    <input type="button" class="next-step pay-btn" value="Return to Home" onclick="location.href='@Url.Action("Index","Home")'" style="background: #df0e62; color: white; border: none; padding: 10px 25px; border-radius: 5px; cursor: pointer;" />
+                </div>
+            </fieldset>
+
+            <input type="hidden" id="ShowtimeId" name="SelectedShowtimeId" />
+            
+            <input type="hidden" id="SelectedSeatIds" name="SelectedSeatIds" />
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<script src="~/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // 1. Khởi tạo mặc định: Chọn ngày đầu tiên
+        myFunction(1);
+
+        // Vô hiệu hóa nút Continue ban đầu
+        $("#screen-next-btn").prop('disabled', true);
+
+        // 2. Xử lý khi nhấn "Continue Booking" (Bước 1 -> Bước 2)
+        $("#screen-next-btn").on('click', function() {
+            var current_fs = $(this).closest('fieldset');
+            var next_fs = current_fs.next();
+            
+            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+            next_fs.show();
+            current_fs.hide();
+        });
+        window.updatePaymentButtonStatus = function(hasSelection) {
+            if (hasSelection) {
+                $("#btn-proceed-payment").prop('disabled', false); // Mở khóa
+            } else {
+                $("#btn-proceed-payment").prop('disabled', true);  // Khóa lại
+            }
+        };
+        // 3. Xử lý khi nhấn "Proceed to Payment" (Bước 2 -> Bước 3)
+        $("#btn-proceed-payment").on('click', function() {
+                var iframe = document.getElementById("seat-sel-iframe");
+                var selectedSeatIds = iframe.contentWindow.getSelectedSeatIds(); 
+
+                // Gán dữ liệu và tính tiền
+                $("#SelectedSeatIds").val(selectedSeatIds.join(','));
+                var total = selectedSeatIds.length * @Model.Price;
+                $("#payment-h3").text("Payment - Total: " + total.toLocaleString('vi-VN') + " VND");
+
+                // Chuyển bước (Y hệt Continue Booking)
+                var current_fs = $(this).closest('fieldset');
+                var next_fs = current_fs.next();
+                $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                next_fs.show();
+                current_fs.hide();
+            });
+        // 4. Xử lý nút Confirm Payment (Bước 3 -> Bước 4: Hiện E-Ticket vào Iframe)
+        $(".pay-btn").click(function(e) {
+            e.preventDefault();
+            var btn = $(this);
+            var showtimeId = $("#ShowtimeId").val();
+            var seatIdsStr = $("#SelectedSeatIds").val();
+            
+            if(!showtimeId || !seatIdsStr) {
+                alert("Thiếu thông tin suất chiếu hoặc ghế ngồi!");
+                return;
+            }
+
+            var seatIds = seatIdsStr.split(',').map(Number);
+            btn.prop('disabled', true).text("Processing...");
+
+            $.ajax({
+                url: '/Home/BookSeats',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    showtimeId: parseInt(showtimeId),
+                    seatIds: seatIds
+                }),
+                success: function(res) {
+                    if(res.success) {
+                        // Nạp URL vé vào iframe thay vì chuyển trang
+                        var eticketUrl = '@Url.Action("ETicket", "Home")?bookingId=' + res.bookingId;
+                        $("#eticket-iframe").attr("src", eticketUrl);
+
+                        // Chuyển sang fieldset cuối cùng
+                        var current_fs = btn.closest('fieldset');
+                        var next_fs = current_fs.next();
+                        
+                        $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                        next_fs.show();
+                        current_fs.hide();
+                    } else {
+                        alert("Lỗi: " + res.message);
+                        btn.prop('disabled', false).text("Confirm Payment");
+                    }
+                },
+                error: function() {
+                    alert("Bạn cần đăng nhập để thực hiện thanh toán.");
+                    window.location.href = "/Home/Sign_In";
+                }
+            });
+        });
+
+        // 5. Xử lý nút Previous (Quay lại)
+        $(".previous-step").click(function() {
+            var current_fs = $(this).closest('fieldset');
+            var prev_fs = current_fs.prev();
+            
+            $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+            prev_fs.show();
+            current_fs.hide();
+        });
+    });
+
+    // --- CÁC HÀM GLOBAL (Nằm ngoài Ready để HTML gọi được) ---
+
+    function myFunction(id) {
+        $(".carousel-cell").css("background", "rgb(243, 235, 235)");
+        $(".carousel-cell .date-numeric, .carousel-cell .date-day").css("color", "inherit");
+
+        let current = document.getElementById(id);
+        if (current) {
+            current.style.background = "#df0e62";
+            $(current).find(".date-numeric, .date-day").css("color", "white");
+            
+            let selectedDate = $(current).find(".date-numeric").text();
+            filterShowtimesByDate(selectedDate);
+            
+            $("#ShowtimeId").val("");
+            $("#screen-next-btn").prop('disabled', true);
+            $(".screen-time").css({"background": "var(--theme-border)", "color": "inherit"});
+        }
+    }
+
+    function selectShowtime(id, btnElement) {
+        $("#ShowtimeId").val(id);
+        $(".screen-time").css({"background": "var(--theme-border)", "color": "inherit"});
+        $(btnElement).css({"background": "#df0e62", "color": "#fff"});
+        $("#screen-next-btn").prop('disabled', false);
+
+        var baseUrl = '@Url.Action("seat_sel", "Home")';
+        $("#seat-sel-iframe").attr("src", baseUrl + "?showtimeId=" + id);
+    }
+
+    function filterShowtimesByDate(day) {
+        $(".time-li").hide();
+        $(".date-" + day).show();
+    }
+</script>
+
+</html>
