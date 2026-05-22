@@ -5,11 +5,13 @@ using VPT_Movie_Box.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Cấu hình Database
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
-    builder.Configuration.GetConnectionString("DefaultConnection")
-));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
+
 builder.Services.AddDbContext<AdminDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 
 // 1. Cấu hình Session
 builder.Services.AddDistributedMemoryCache();
@@ -57,5 +59,18 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    // Tạo bảng cho ApplicationDbContext
+    var appDb = services.GetRequiredService<ApplicationDbContext>();
+    appDb.Database.Migrate();
+
+    // Tạo bảng cho AdminDbContext
+    var adminDb = services.GetRequiredService<AdminDbContext>();
+    adminDb.Database.Migrate();
+}
 
 app.Run();

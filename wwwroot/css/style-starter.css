@@ -15763,6 +15763,119 @@ button.owl-next {
   height: auto;
 }
 
+/* Now Playing section - Larger posters */
+.owl-four.owl-carousel .box16 {
+  max-width: 280px;
+  margin: 0 auto;
+  width: 280px;
+  height: 380px;
+  overflow: hidden;
+}
+
+.owl-four.owl-carousel .box16 figure {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.owl-four.owl-carousel .box16 img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  min-height: 0;
+  object-fit: cover;
+  aspect-ratio: 2/3;
+  display: block;
+}
+
+@media (max-width: 1200px) {
+  .owl-four.owl-carousel .box16 {
+    max-width: 240px;
+    width: 240px;
+    height: 320px;
+  }
+
+  .owl-four.owl-carousel .box16 img {
+    max-width: none;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .owl-four.owl-carousel .box16 {
+    max-width: 200px;
+    width: 200px;
+    height: 280px;
+  }
+
+  .owl-four.owl-carousel .box16 img {
+    max-width: none;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .owl-four.owl-carousel .box16 {
+    max-width: 160px;
+    width: 160px;
+    height: 220px;
+  }
+
+  .owl-four.owl-carousel .box16 img {
+    max-width: none;
+    min-height: 0;
+  }
+}
+
+/* Reduce spacing between Now Playing items */
+.owl-four.owl-carousel .item {
+  margin: 0 10px;
+}
+
+.owl-four.owl-carousel .owl-item {
+  width: auto !important;
+}
+
+.owl-four.owl-carousel .owl-stage {
+  display: flex;
+  align-items: flex-start;
+}
+
+.owl-four.owl-carousel .vhny-grid {
+  padding: 0;
+  margin: 0;
+  width: auto;
+  height: auto;
+  display: block;
+}
+
+.owl-four.owl-carousel .vhny-grid .box16 {
+  width: 280px;
+  height: 380px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1200px) {
+  .owl-four.owl-carousel .vhny-grid .box16 {
+    width: 240px;
+    height: 320px;
+  }
+}
+
+@media (max-width: 768px) {
+  .owl-four.owl-carousel .vhny-grid .box16 {
+    width: 200px;
+    height: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .owl-four.owl-carousel .vhny-grid .box16 {
+    width: 160px;
+    height: 220px;
+  }
+}
+
 .w3l-grids .box16 .box-content {
   padding: 15px;
   bottom: 30px;
