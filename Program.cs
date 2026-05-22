@@ -68,9 +68,9 @@ using (var scope = app.Services.CreateScope())
     var appDb = services.GetRequiredService<ApplicationDbContext>();
     appDb.Database.Migrate();
 
-    // Tạo bảng cho AdminDbContext
-    var adminDb = services.GetRequiredService<AdminDbContext>();
-    adminDb.Database.Migrate();
+    //// Tạo bảng cho AdminDbContext
+    //var adminDb = services.GetRequiredService<AdminDbContext>();
+    //adminDb.Database.Migrate();
 }
 
 app.Run();
