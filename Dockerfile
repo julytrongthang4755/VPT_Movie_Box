@@ -16,4 +16,5 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 
 WORKDIR /app
 
-COPY --from=build /app/publish .ENTRYPOINT ["dotnet", "VPT_Movie_Box.dll"]
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "VPT_Movie_Box.dll"]
