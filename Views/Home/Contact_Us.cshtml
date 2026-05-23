@@ -153,7 +153,7 @@
       <div class="row100" id="fname-row100">
         <div class="col">
           <div class="inputBox" id="fname-inputBox">
-            <input type="text" asp-for="Name" onclick="triggerAnim('fname')" />
+            <input type="text" asp-for="Name" onclick="triggerAnim('fname')" oninput="syncLabel(this)" onblur="syncLabel(this)" />
             <span class="text">First Name</span>
             <span class="line" id="fname-line"></span>
             <span class="text-danger">@Html.ValidationMessageFor(m => m.Name)</span>
@@ -163,7 +163,7 @@
       <div class="row100" id="email-row100">
         <div class="col">
           <div class="inputBox" id="email-inputBox">
-            <input type="email" asp-for="Email" onclick="triggerAnim('email')" />
+            <input type="email" asp-for="Email" onclick="triggerAnim('email')" oninput="syncLabel(this)" onblur="syncLabel(this)" />
             <span class="text">Email ID</span>
             <span class="line" id="email-line"></span>
             <span class="text-danger">@Html.ValidationMessageFor(m => m.Email)</span>
@@ -171,7 +171,7 @@
         </div>
         <div class="col">
           <div class="inputBox" id="tel-inputBox">
-            <input type="tel" asp-for="Phone" onclick="triggerAnim('tel')" />
+            <input type="tel" asp-for="Phone" onclick="triggerAnim('tel')" oninput="syncLabel(this)" onblur="syncLabel(this)" />
             <span class="text">Mobile Number</span>
             <span class="line" id="tel-line"></span>
             <span class="text-danger">@Html.ValidationMessageFor(m => m.Phone)</span>
@@ -181,7 +181,7 @@
       <div class="row100">
         <div class="col">
           <div class="inputBox textarea">
-            <textarea asp-for="Message"></textarea>
+            <textarea asp-for="Message" oninput="syncLabel(this)" onblur="syncLabel(this)"></textarea>
             <span class="text">Type your message Here...</span>
             <span class="line"></span>
             <span class="text-danger">@Html.ValidationMessageFor(m => m.Message)</span>
@@ -318,3 +318,29 @@
 				});
 			}
 		</script>
+
+@section Scripts {
+  <script>
+    (function () {
+      function syncLabel(el) {
+        var container = el.closest('.inputBox');
+        if (!container) return;
+        var label = container.querySelector('.text');
+        if (!label) return;
+        var val = (el.value || '').toString().trim();
+        label.style.display = val ? 'none' : '';
+      }
+
+      // Expose for inline handlers (onclick in your markup)
+      window.syncLabel = syncLabel;
+
+      // Initialize on DOM ready for any prefilled values
+      document.addEventListener('DOMContentLoaded', function () {
+        var inputs = document.querySelectorAll('.inputBox input, .inputBox textarea');
+        inputs.forEach(function (el) {
+          syncLabel(el);
+        });
+      });
+    })();
+  </script>
+}
