@@ -20,7 +20,6 @@ namespace VPT_Movie_Box.Data
 
         public DbSet<Seats> Seats { get; set; }
 
-        public DbSet<Cinemas> Cinemas { get; set; }
         public DbSet<Bookings> Bookings { get; set; }
 
         public DbSet<BookingSeats> BookingSeats { get; set; }

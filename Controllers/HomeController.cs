@@ -170,7 +170,6 @@ namespace VPT_Movie_Box.Controllers
                     .ThenInclude(s => s.Movie)
                 .Include(b => b.Showtime)
                     .ThenInclude(s => s.Screen)
-                        .ThenInclude(sc => sc.Cinema)
                 .Include(b => b.BookingSeats)
                     .ThenInclude(bs => bs.Seat)
                 .FirstOrDefault(b => b.BookingId == bookingId);
@@ -190,7 +189,6 @@ namespace VPT_Movie_Box.Controllers
                 BookingId = booking.BookingId,
                 MovieTitle = booking.Showtime?.Movie?.Title ?? "N/A",
                 PosterUrl = booking.Showtime?.Movie?.PosterUrl,
-                CinemaName = booking.Showtime?.Screen?.Cinema?.CinemaName ?? "N/A",
                 ScreenName = booking.Showtime?.Screen?.ScreenName ?? "N/A",
 
                 // Gán giá tiền (Lấy 110.00 từ DB)
@@ -397,7 +395,6 @@ namespace VPT_Movie_Box.Controllers
                            join st in _context.Showtimes on b.ShowtimeId equals st.ShowtimeId
                            join m in _context.Movies on st.MovieId equals m.MovieId
                            join s in _context.Screens on st.ScreenId equals s.ScreenId
-                           join c in _context.Cinemas on s.CinemaId equals c.CinemaId
                            join bs in _context.BookingSeats on b.BookingId equals bs.BookingId
                            join se in _context.Seats on bs.SeatId equals se.SeatId
                            where b.UserId == userId
@@ -407,7 +404,6 @@ namespace VPT_Movie_Box.Controllers
                                b.TotalPrice,
                                b.Status,
                                MovieTitle = m.Title,
-                               CinemaName = c.CinemaName,
                                ScreenName = s.ScreenName,
                                BookingDate = b.BookingDate,
                                StartTime = st.StartTime,
@@ -424,7 +420,6 @@ namespace VPT_Movie_Box.Controllers
                     x.TotalPrice,
                     x.Status,
                     x.MovieTitle,
-                    x.CinemaName,
                     x.ScreenName,
                     x.StartTime
                 })
@@ -435,7 +430,6 @@ namespace VPT_Movie_Box.Controllers
                     TotalPrice = g.Key.TotalPrice,
                     Status = g.Key.Status,
                     MovieTitle = g.Key.MovieTitle,
-                    CinemaName = g.Key.CinemaName,
                     ScreenName = g.Key.ScreenName,
                     StartTime = g.Key.StartTime,
 

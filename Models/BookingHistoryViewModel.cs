@@ -8,7 +8,6 @@
         public string Status { get; set; }
 
         public string MovieTitle { get; set; }
-        public string CinemaName { get; set; }
         public string ScreenName { get; set; }
 
         public DateTime StartTime { get; set; }

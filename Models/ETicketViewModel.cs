@@ -5,7 +5,6 @@
             public string MovieTitle { get; set; }
             public string PosterUrl { get; set; }
 
-            public string CinemaName { get; set; }
             public string ScreenName { get; set; }
 
             public string SeatRow { get; set; }

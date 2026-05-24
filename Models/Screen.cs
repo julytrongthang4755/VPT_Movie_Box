@@ -12,6 +12,5 @@
 
         public List<Showtime> Showtimes { get; set; }
 
-        public Cinemas Cinema { get; set; }
     }
 }
