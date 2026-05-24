@@ -9,6 +9,40 @@
   <link rel="stylesheet" type="text/css" href="~/css/contact_us.css">
   <link rel="stylesheet" type="text/css" href="~/css/style-starter.css">
   <link rel="stylesheet" type="text/css" href="~/css/user-profile.css">
+  <style>
+    /* Default (light) styles */
+    .inputBox input,
+    .inputBox textarea {
+      color: #000;
+    }
+
+    /* Dark mode: make typed text and labels visible */
+    @media (prefers-color-scheme: dark) {
+      .inputBox input,
+      .inputBox textarea {
+        color: #ffffff !important;
+        background-color: transparent;
+        /* keep existing background, adjust if needed */
+        caret-color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+
+      /* floating label / helper text */
+      .inputBox .text {
+        color: #e6e6e6 !important;
+      }
+
+      /* decorative line */
+      .inputBox .line {
+        background: rgba(255, 255, 255, 0.2) !important;
+      }
+
+      /* validation messages */
+      .text-danger {
+        color: #ffb3b3 !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
